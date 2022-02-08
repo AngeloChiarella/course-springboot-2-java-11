@@ -64,7 +64,7 @@ public class UserService
 		}
 		catch (EntityNotFoundException e)
 		{
-			throw new DatabaseException(e.getMessage());
+			throw new ResourceNotFoundException(id);
 		}
 	}
 
