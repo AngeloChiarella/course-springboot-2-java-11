@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.educandoweb.coursejpa.entities.User;
 import com.educandoweb.coursejpa.repositories.UserRepository;
+import com.educandoweb.coursejpa.services.exceptions.ResourceNotFoundException;
 
 @Service // Registra como componente para ser injetado automaticamente com @Autowired
 public class UserService
@@ -23,7 +24,7 @@ public class UserService
 	public User findById(Long id)
 	{
 		Optional<User> obj = repository.findById(id);
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public User insert(User obj)
@@ -42,7 +43,7 @@ public class UserService
 		updateData(entity, obj);
 		return repository.save(entity);
 	}
-	
+
 	private void updateData(User entity, User obj)
 	{
 		entity.setName(obj.getName());
