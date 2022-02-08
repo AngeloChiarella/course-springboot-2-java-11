@@ -3,8 +3,10 @@ package com.educandoweb.coursejpa.resources;
 import java.net.URI;
 import java.util.List;
 
+import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +45,15 @@ public class UserResource
 	public ResponseEntity<User> insert(@RequestBody User obj)
 	{
 		obj = service.insert(obj);
+		// URI - Endereço do recurso para retornar 201 no postman
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-		return ResponseEntity.created(uri).body(obj);
+		return ResponseEntity.created(uri).body(obj); // .created - recebe obj do tipo URI
+	}
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id)
+	{
+		service.delete(id);
+		return ResponseEntity.noContent().build(); // noContent retorna resposta vazia
 	}
 }
