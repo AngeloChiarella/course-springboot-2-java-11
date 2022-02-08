@@ -11,14 +11,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tb_product")
 public class Product implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -29,12 +32,11 @@ public class Product implements Serializable
 
 //	@Transient//Impede o JPA de interpretar
 	@ManyToMany
-	@JoinTable(name = "tb_product_category", 
-	joinColumns = 	@JoinColumn(name = "product_id"),//  joinColumns - chave estrangeira (produto)
-	inverseJoinColumns = @JoinColumn(name = "category_id"))// inverseJoinColumns - definir chave estrangeira da outra entity
+	@JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), // joinColumns - chave estrangeira (produto)
+			inverseJoinColumns = @JoinColumn(name = "category_id")) // inverseJoinColumns - definir chave estrangeira da outra entity
 	private Set<Category> categories = new HashSet<>();
 //	Set - representa conjunto sem repetir os dados(O mesmo produto só tem uma categoria)
-	
+
 	public Product(Long id, String name, String description, Double price, String imgUrl)
 	{
 		super();
@@ -44,6 +46,9 @@ public class Product implements Serializable
 		this.price = price;
 		this.imgUrl = imgUrl;
 	}
+
+	@OneToMany(mappedBy = "id.product")
+	private Set<OrderItem> items = new HashSet<>();
 
 	public Product()
 	{
@@ -103,6 +108,17 @@ public class Product implements Serializable
 	public Set<Category> getCategories()
 	{
 		return categories;
+	}
+
+	@JsonIgnore
+	public Set<Order> getOrders()
+	{
+		Set<Order> set = new HashSet<>();
+		for (OrderItem x : items)
+		{
+			set.add(x.getOrder());
+		}
+		return set;
 	}
 
 	@Override
