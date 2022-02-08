@@ -28,7 +28,7 @@ public class Order implements Serializable
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT") // Formatar o Json
 	private Instant moment;
 
@@ -40,8 +40,8 @@ public class Order implements Serializable
 
 	@OneToMany(mappedBy = "id.order") // OrderItem tem id(PK), e o id tem o pedido
 	private Set<OrderItem> items = new HashSet<>();
-	
-	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL)//Mapeando as entidades para ter o mesmo Id
+
+	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL) // Mapeando as entidades para ter o mesmo Id
 	private Payment payment;
 
 	public Order()
@@ -115,7 +115,17 @@ public class Order implements Serializable
 	{
 		return items;
 	}
-	
+
+	public Double getTotal()
+	{
+		double sum = 0.0;
+		for (OrderItem x : items)
+		{
+			sum += x.getSubTotal();
+		}
+		return sum;
+	}
+
 	@Override
 	public int hashCode()
 	{

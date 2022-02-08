@@ -16,7 +16,8 @@ public class OrderItem implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId //usada para especificar que o identificador de entidade é um tipo incorporável.
+	@EmbeddedId // usada para especificar que o identificador de entidade é um tipo
+				// incorporável.
 	private OrderItemPK id = new OrderItemPK();
 
 	private Integer quantity;
@@ -75,6 +76,11 @@ public class OrderItem implements Serializable
 	public void setPrice(Double price)
 	{
 		this.price = price;
+	}
+	
+	public Double getSubTotal()
+	{
+		return price * quantity;
 	}
 
 	@Override
